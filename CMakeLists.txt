@@ -1,3 +1,7 @@
+# Please check README.md for copyright and licensing.
+# If not available contact developer at vitor@bezzan.com
+# Code is distributed as-is without any guarantee of purpose.
+
 cmake_minimum_required(VERSION 3.23)
 project(minila)
 

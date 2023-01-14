@@ -4,7 +4,6 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
-
 int main(int argc, char **argv)
 {
     return 0;

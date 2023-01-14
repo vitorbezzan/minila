@@ -4,5 +4,4 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
-
 #include "include/minila/array_definition.h"
