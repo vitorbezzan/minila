@@ -12,7 +12,7 @@ include_directories(/usr/local/include/) # << Here
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_library(minila SHARED include/minila/array.h library.cpp include/minila/minila.h)
+add_library(minila SHARED include/minila/base.h library.cpp include/minila/minila.h)
 
 # 2 - Creating tests executable
 add_executable(run_tests tests.cpp)

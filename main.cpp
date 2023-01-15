@@ -4,11 +4,13 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
+#include <iostream>
 #include "include/minila/minila.h"
 
 using namespace minila;
+using namespace std;
 
-int main(int argc, char **argv)
+int main()
 {
     return 0;
 }

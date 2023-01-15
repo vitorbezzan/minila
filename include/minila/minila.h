@@ -7,6 +7,6 @@
 #ifndef MINILA_MINILA_H
 #define MINILA_MINILA_H
 
-#include "array.h"
+#include "base.h"
 
 #endif //MINILA_MINILA_H
