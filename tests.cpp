@@ -5,6 +5,7 @@
  */
 
 #include <gtest/gtest.h>
+#include "include/minila/minila.h"
 
 int main(int argc, char **argv)
 {

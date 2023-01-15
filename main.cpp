@@ -4,6 +4,10 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
+#include "include/minila/minila.h"
+
+using namespace minila;
+
 int main(int argc, char **argv)
 {
     return 0;

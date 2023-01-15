@@ -4,4 +4,16 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
-#include "include/minila/minila.h"
+#ifndef MINILA_ARRAY_H
+#define MINILA_ARRAY_H
+
+#include <concepts>
+#include <numeric>
+#include <vector>
+
+namespace minila
+{
+
+}
+
+#endif //MINILA_ARRAY_H

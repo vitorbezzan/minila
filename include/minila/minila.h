@@ -4,4 +4,9 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
-#include "include/minila/minila.h"
+#ifndef MINILA_MINILA_H
+#define MINILA_MINILA_H
+
+#include "array.h"
+
+#endif //MINILA_MINILA_H
