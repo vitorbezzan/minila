@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <concepts>
 #include <numeric>
+#include <stdexcept>
 
 namespace minila
 {
@@ -18,61 +19,88 @@ namespace minila
     class BaseArray
     {
     public:
+        friend class BaseArray;
 
-        // Constructor/destructor for BaseArray
+        BaseArray();
+        BaseArray(BaseArray<InternalType> &right);
         BaseArray(uint8_t n_axis, uint64_t *axis_size);
         BaseArray(uint8_t n_axis, uint64_t *axis_size, InternalType *values);
         virtual ~BaseArray();
 
-        // Some useful functions
-        uint8_t n_axis() {return _n_axis;}
-        uint64_t n_elements() {return _n_elements;}
+        uint8_t n_axis();
+        uint64_t n_elements();
 
-        // Manipulate data within structure
         InternalType &operator[](uint64_t n_element);
-        InternalType &operator[](uint64_t &n_element);
-
-        // Get axis size
         uint64_t operator()(uint8_t axis);
-        uint64_t operator()(uint8_t &axis);
 
-        // Other operators
+        BaseArray<InternalType>& operator=(const BaseArray<InternalType>& right);
 
     private:
-        uint8_t _n_axis;  // Number of dimensions.
-        uint64_t _n_elements;  // Number of elements in array.
-        InternalType *_values; // Linear array to store values.
-        uint64_t *_axis_size;  // Size of each axis.
+        void _build_object(uint8_t n_axis, uint64_t *axis_size, InternalType *values);
+
+        template<typename ExternalType>
+        bool _check_array(const BaseArray<ExternalType> &right);
+
+        uint8_t _n_axis{};
+        uint64_t _n_elements{};
+        uint64_t *_axis_size{};
+        InternalType *_values;
     };
+
+    template<typename InternalType>
+    requires std::floating_point<InternalType>
+    void BaseArray<InternalType>::_build_object(
+            uint8_t n_axis, uint64_t *axis_size, InternalType *values)
+    {
+        if(n_axis > 0)
+        {
+            _n_axis = n_axis;
+            _axis_size = new uint64_t[n_axis];
+
+            auto N = std::accumulate(axis_size, axis_size + n_axis, 1, std::multiplies());
+            _n_elements = N;
+
+            std::copy(axis_size, axis_size + n_axis, _axis_size);
+
+            _values = new InternalType[N];
+            if(values != nullptr)
+                std::copy(values, values + N, _values);
+        }
+        else
+        {
+            _n_axis = 0;
+            _n_elements = 0;
+            _axis_size = nullptr;
+            _values = nullptr;
+        }
+    }
+
+    template<typename InternalType>
+    requires std::floating_point<InternalType>
+    BaseArray<InternalType>::BaseArray()
+    {
+        _build_object(0, nullptr, nullptr);
+    }
+
+    template<typename InternalType>
+    requires std::floating_point<InternalType>
+    BaseArray<InternalType>::BaseArray(BaseArray<InternalType> &right)
+    {
+        _build_object(right._n_axis, right._axis_size, right._values);
+    }
 
     template<typename InternalType>
     requires std::floating_point<InternalType>
     BaseArray<InternalType>::BaseArray(uint8_t n_axis, uint64_t *axis_size)
     {
-        auto N = std::accumulate(axis_size, axis_size + n_axis, 1, std::multiplies());
-
-        _n_axis = n_axis;
-        _n_elements = N;
-        _values = new InternalType[_n_elements];
-
-        _axis_size = new uint64_t[n_axis];
-        std::copy(axis_size, axis_size + n_axis, _axis_size);
+        _build_object(n_axis, axis_size, nullptr);
     }
 
     template<typename InternalType>
     requires std::floating_point<InternalType>
     BaseArray<InternalType>::BaseArray(uint8_t n_axis, uint64_t *axis_size, InternalType *values)
     {
-        auto N = std::accumulate(axis_size, axis_size + n_axis, 1, std::multiplies());
-
-        _n_axis = n_axis;
-        _n_elements = N;
-
-        _values = new InternalType[_n_elements];
-        std::copy(values, values + N, _values);
-
-        _axis_size = new uint64_t[n_axis];
-        std::copy(axis_size, axis_size + n_axis, _axis_size);
+        _build_object(n_axis, axis_size, values);
     }
 
     template<typename InternalType>
@@ -85,19 +113,25 @@ namespace minila
 
     template<typename InternalType>
     requires std::floating_point<InternalType>
-    InternalType &BaseArray<InternalType>::operator[](uint64_t n_element)
+    uint8_t BaseArray<InternalType>::n_axis()
     {
-        assert(n_element >= 0);
-        assert(n_element < _n_elements);
-        return _values[n_element];
+        return _n_axis;
     }
 
     template<typename InternalType>
     requires std::floating_point<InternalType>
-    InternalType &BaseArray<InternalType>::operator[](uint64_t &n_element)
+    uint64_t BaseArray<InternalType>::n_elements()
     {
-        assert(n_element >= 0);
-        assert(n_element < _n_elements);
+        return _n_elements;
+    }
+
+    template<typename InternalType>
+    requires std::floating_point<InternalType>
+    InternalType &BaseArray<InternalType>::operator[](uint64_t n_element)
+    {
+        if(n_element >= _n_elements)
+            throw std::invalid_argument("Invalid ranges for element.");
+
         return _values[n_element];
     }
 
@@ -105,18 +139,24 @@ namespace minila
     requires std::floating_point<InternalType>
     uint64_t BaseArray<InternalType>::operator()(uint8_t axis)
     {
-        assert(axis >= 0);
-        assert(axis < _n_axis);
+        if(axis >= _n_axis)
+            throw std::invalid_argument("Invalid ranges for axis.");
+
         return _axis_size[axis];
     }
 
     template<typename InternalType>
-    requires std::floating_point<InternalType>
-    uint64_t BaseArray<InternalType>::operator()(uint8_t &axis)
+    requires std::floating_point<InternalType>BaseArray<InternalType> &
+    BaseArray<InternalType>::operator=(const BaseArray<InternalType> &right)
     {
-        assert(axis >= 0);
-        assert(axis < _n_axis);
-        return _axis_size[axis];
+        if (&right != this)
+        {
+            delete[] _axis_size;
+            delete[] _values;
+
+            _build_object(right._n_axis, right._axis_size, right._values);
+        }
+        return *this;
     }
 
 }

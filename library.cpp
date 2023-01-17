@@ -6,6 +6,3 @@
 
 #include "include/minila/minila.h"
 
-template class minila::BaseArray<float>;
-template class minila::BaseArray<double>;
-template class minila::BaseArray<long double>;
