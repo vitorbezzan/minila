@@ -25,6 +25,7 @@ namespace minila
         BaseArray(BaseArray<InternalType> &right);
         BaseArray(uint8_t n_axis, uint64_t *axis_size);
         BaseArray(uint8_t n_axis, uint64_t *axis_size, InternalType *values);
+
         virtual ~BaseArray();
 
         uint8_t n_axis();
@@ -34,12 +35,13 @@ namespace minila
         uint64_t operator()(uint8_t axis);
 
         BaseArray<InternalType>& operator=(const BaseArray<InternalType>& right);
+        BaseArray<InternalType> operator+(const BaseArray<InternalType>& right);
+        BaseArray<InternalType> operator-(const BaseArray<InternalType>& right);
+
 
     private:
         void _build_object(uint8_t n_axis, uint64_t *axis_size, InternalType *values);
-
-        template<typename ExternalType>
-        bool _check_array(const BaseArray<ExternalType> &right);
+        bool _check_consistency(const BaseArray<InternalType>& right);
 
         uint8_t _n_axis{};
         uint64_t _n_elements{};
@@ -49,8 +51,7 @@ namespace minila
 
     template<typename InternalType>
     requires std::floating_point<InternalType>
-    void BaseArray<InternalType>::_build_object(
-            uint8_t n_axis, uint64_t *axis_size, InternalType *values)
+    void BaseArray<InternalType>::_build_object(uint8_t n_axis, uint64_t *axis_size, InternalType *values)
     {
         if(n_axis > 0)
         {
@@ -157,6 +158,49 @@ namespace minila
             _build_object(right._n_axis, right._axis_size, right._values);
         }
         return *this;
+    }
+
+    template<typename InternalType>
+    requires std::floating_point<InternalType>
+    bool BaseArray<InternalType>::_check_consistency(const BaseArray<InternalType> &right)
+    {
+        if(_n_axis == right._n_axis)
+            if(std::equal(_axis_size, _axis_size + _n_axis, right._axis_size))
+                return true;
+            else
+                return false;
+        else
+            return false;
+    }
+
+    template<typename InternalType>
+    requires std::floating_point<InternalType>BaseArray<InternalType>
+    BaseArray<InternalType>::operator+(const BaseArray<InternalType> &right)
+    {
+        if(_check_consistency(right))
+        {
+            auto new_values = new InternalType[_n_elements];
+            std::transform(_values, _values + _n_elements, right._values, new_values, std::plus{});
+
+            return BaseArray<InternalType> (_n_axis, _axis_size, new_values);
+        }
+
+        throw std::invalid_argument("Invalid axis for operation +.");
+    }
+
+    template<typename InternalType>
+    requires std::floating_point<InternalType>BaseArray<InternalType>
+    BaseArray<InternalType>::operator-(const BaseArray<InternalType> &right)
+    {
+        if(_check_consistency(right))
+        {
+            auto new_values = new InternalType[_n_elements];
+            std::transform(_values, _values + _n_elements, right._values, new_values, std::minus{});
+
+            return BaseArray<InternalType> (_n_axis, _axis_size, new_values);
+        }
+
+        throw std::invalid_argument("Invalid axis for operation -.");
     }
 
 }

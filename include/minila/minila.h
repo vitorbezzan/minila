@@ -8,5 +8,6 @@
 #define MINILA_MINILA_H
 
 #include "base.h"
+#include "matrix.h"
 
 #endif //MINILA_MINILA_H

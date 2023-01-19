@@ -6,3 +6,11 @@
 
 #include "include/minila/minila.h"
 
+// BaseArray
+template class minila::BaseArray<float>;
+template class minila::BaseArray<double>;
+
+// Matrix
+template class minila::Matrix<float>;
+template class minila::Matrix<double>;
+
