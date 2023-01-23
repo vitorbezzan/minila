@@ -6,8 +6,14 @@
 
 #include "include/minila/minila.h"
 
-template class minila::BaseArray<float>;
-template class minila::BaseArray<double>;
+template
+class minila::BaseArray<float>;
 
-template class minila::Matrix<float>;
-template class minila::Matrix<double>;
+template
+class minila::BaseArray<double>;
+
+template
+class minila::Matrix<float>;
+
+template
+class minila::Matrix<double>;

@@ -9,5 +9,6 @@
 
 #include "base.h"
 #include "matrix.h"
+#include "print.h"
 
 #endif //MINILA_MINILA_H

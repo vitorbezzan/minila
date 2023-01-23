@@ -4,10 +4,7 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
-#include <gtest/gtest.h>
-#include "include/minila/minila.h"
+#ifndef MINILA_PRINT_H
+#define MINILA_PRINT_H
 
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+#endif //MINILA_PRINT_H

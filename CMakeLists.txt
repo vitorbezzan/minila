@@ -19,4 +19,4 @@ add_executable(run_tests tests.cpp)
 target_link_libraries(run_tests ${GTEST_LIBRARIES} pthread)
 
 # 3 - Add scratchpad code for quick testing/deploy
-add_executable(main main.cpp)
+add_executable(main main.cpp include/minila/print.h)
