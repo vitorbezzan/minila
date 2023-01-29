@@ -29,11 +29,14 @@ namespace minila {
         BaseArray<Type> &operator=(const BaseArray<Type> &right);
         BaseArray<Type> operator+(const BaseArray<Type> &right);
         BaseArray<Type> operator-(const BaseArray<Type> &right);
+
         Type &operator()(const std::vector<uint64_t> &index);
-        const uint64_t operator[](uint64_t dimension);
+        uint64_t operator[](uint64_t dimension);
 
         template<typename External>
         BaseArray<External> cast();
+
+        Type *data();
 
     private:
         void _check_dimensions(const BaseArray<Type> &right);
@@ -135,7 +138,7 @@ namespace minila {
 
     template<typename Type>
     requires std::floating_point<Type>
-    const uint64_t BaseArray<Type>::operator[](uint64_t dimension) {
+    uint64_t BaseArray<Type>::operator[](uint64_t dimension) {
         return _dimensions[dimension];
     }
 
@@ -144,6 +147,11 @@ namespace minila {
     template<typename External>
     BaseArray<External> BaseArray<Type>::cast() {
         return BaseArray<External>(_dimensions, std::vector<External>(_values.begin(), _values.end()));
+    }
+
+    template<typename Type>
+    requires std::floating_point<Type>Type *BaseArray<Type>::data() {
+        return _values.data();
     }
 
 }

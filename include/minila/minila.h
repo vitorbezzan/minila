@@ -10,5 +10,7 @@
 #include "base.h"
 #include "matrix.h"
 #include "print.h"
+#include "matrix_multiply.h"
+#include "vector.h"
 
 #endif //MINILA_MINILA_H

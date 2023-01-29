@@ -17,3 +17,9 @@ class minila::Matrix<float>;
 
 template
 class minila::Matrix<double>;
+
+template
+class minila::Vector<float>;
+
+template
+class minila::Vector<double>;

@@ -7,6 +7,8 @@
 #ifndef MINILA_MATRIX_H
 #define MINILA_MATRIX_H
 
+#include <cblas.h>
+#include <stdexcept>
 #include "base.h"
 
 namespace minila {
@@ -26,8 +28,10 @@ namespace minila {
         Matrix<Type> operator+(const Matrix<Type> &right);
         Matrix<Type> operator-(const Matrix<Type> &right);
 
-        const uint64_t rows();
-        const uint64_t cols();
+        uint64_t rows();
+        uint64_t cols();
+
+        Type *data();
 
     private:
         BaseArray<Type> _data;
@@ -55,13 +59,18 @@ namespace minila {
     }
 
     template<typename Type>
-    const uint64_t Matrix<Type>::rows() {
+    uint64_t Matrix<Type>::rows() {
         return _rows;
     }
 
     template<typename Type>
-    const uint64_t Matrix<Type>::cols() {
+    uint64_t Matrix<Type>::cols() {
         return _cols;
+    }
+
+    template<typename Type>
+    Type *Matrix<Type>::data() {
+        return _data.data();
     }
 
     template<typename Type>
@@ -74,15 +83,38 @@ namespace minila {
     template<typename Type>
     Matrix<Type> Matrix<Type>::operator+(const Matrix<Type> &right) {
         auto result = _data + right._data;
-        return Matrix < Type > (result);
+        return Matrix<Type>(result);
     }
 
     template<typename Type>
     Matrix<Type> Matrix<Type>::operator-(const Matrix<Type> &right) {
         auto result = _data - right._data;
-        return Matrix < Type > (result);
+        return Matrix<Type>(result);
     }
 
+    namespace naive {
+
+        // This naive algorithm accepts different multiplication types
+        template<typename T1, typename T2>
+        auto multiply(Matrix<T1> &left, Matrix<T2> &right) {
+
+            auto cols = left.cols();
+            auto rows = right.rows();
+
+            if (cols != rows)
+                throw std::invalid_argument("Invalid axis sizes on operation multiply.");
+
+            using R = decltype(T1(0) + T2(0));
+            Matrix<R> result(left.rows(), right.cols());
+
+            for (uint64_t i = 1; i <= result.rows(); i++)
+                for (uint64_t k = 1; k <= cols; k++)
+                    for (uint64_t j = 1; j <= result.cols(); j++)
+                        result(i, j) += left(i, k) * right(k, j);
+
+            return result;
+        }
+    };
 };
 
 #endif //MINILA_MATRIX_H
