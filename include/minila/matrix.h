@@ -7,9 +7,9 @@
 #ifndef MINILA_MATRIX_H
 #define MINILA_MATRIX_H
 
-#include <cblas.h>
 #include <stdexcept>
 #include "base.h"
+#include "vector.h"
 
 namespace minila {
 
@@ -97,23 +97,52 @@ namespace minila {
         // This naive algorithm accepts different multiplication types
         template<typename T1, typename T2>
         auto multiply(Matrix<T1> &left, Matrix<T2> &right) {
-
-            auto cols = left.cols();
-            auto rows = right.rows();
-
-            if (cols != rows)
+            if (left.cols() != right.rows())
                 throw std::invalid_argument("Invalid axis sizes on operation multiply.");
 
-            using R = decltype(T1(0) + T2(0));
+            using R = decltype(T1(0) * T2(0));
             Matrix<R> result(left.rows(), right.cols());
 
             for (uint64_t i = 1; i <= result.rows(); i++)
-                for (uint64_t k = 1; k <= cols; k++)
+                for (uint64_t k = 1; k <= left.cols(); k++)
                     for (uint64_t j = 1; j <= result.cols(); j++)
                         result(i, j) += left(i, k) * right(k, j);
 
             return result;
         }
+
+        // This naive algorithm accepts different multiplication types
+        template<typename T1, typename T2>
+        auto multiply(Matrix<T1> &M, Vector<T2> &v) {
+            if(M.cols() != v.dimensions())
+                throw std::invalid_argument("Invalid axis sizes on operation multiply.");
+
+            using R = decltype(T1(0) * T2(0));
+            Vector<R> result(M.rows());
+
+            for (uint64_t i = 1; i <= result.dimensions(); i++)
+                for (uint64_t k = 1; k <= M.cols(); k++)
+                    result(i) += M(i, k) * v(k);
+
+            return result;
+        }
+
+        // This naive algorithm accepts different multiplication types
+        template<typename T1, typename T2>
+        auto multiply(Vector<T1> &v, Matrix<T2> &M) {
+            if (v.dimensions() != M.rows())
+                throw std::invalid_argument("Invalid axis sizes on operation multiply.");
+
+            using R = decltype(T1(0) * T2(0));
+            Vector<R> result(M.cols());
+
+            for(uint64_t i = 1; i <= result.dimensions(); i++)
+                for (uint64_t k = 1; k <= M.cols(); k++)
+                    result(i) += v(k) * M(k, i);
+
+            return result;
+        }
+
     };
 };
 
