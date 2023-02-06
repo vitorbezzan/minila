@@ -15,6 +15,17 @@
 namespace minila::op {
 
     namespace naive {
+
+        template<typename T1, typename T2>
+        auto operator*(Vector<T1> &left, T2 right) {
+            return minila::naive::multiply(left, right);
+        }
+
+        template<typename T1, typename T2>
+        auto operator*(T2 left, Vector<T1> &right) {
+            return minila::naive::multiply(left, right);
+        }
+
         template<typename T1, typename T2>
         auto operator*(Vector<T1> &left, Vector<T2> &right) {
             return minila::naive::dot(left, right);
@@ -34,9 +45,27 @@ namespace minila::op {
         auto operator*(Vector<T1> &left, Matrix<T2> &right) {
             return minila::naive::multiply(left, right);
         }
+
     };
 
     namespace performance {
+
+        Vector<float> operator*(Vector<float> &left, float right) {
+            return minila::blas::multiply(left, right);
+        }
+
+        Vector<double> operator*(Vector<double> &left, double right) {
+            return minila::blas::multiply(left, right);
+        }
+
+        Vector<float> operator*(float left, Vector<float> &right) {
+            return minila::blas::multiply(left, right);
+        }
+
+        Vector<double> operator*(double left, Vector<double> &right) {
+            return minila::blas::multiply(left, right);
+        }
+
         float operator*(Vector<float> &left, Vector<float> &right) {
             return minila::blas::dot(left, right);
         }
@@ -76,6 +105,7 @@ namespace minila::op {
         Vector<double> operator*(Vector<double> &left, Matrix<double> &right) {
             return minila::blas::multiply(left, right);
         }
+
     };
 };
 

@@ -17,6 +17,48 @@
 namespace minila::blas {
 
     template<typename T>
+    Vector<T> multiply(Vector<T> &left, T right) {
+        throw std::runtime_error("Unsupported type for blas::multiply.");
+    }
+
+    template<>
+    Vector<float> multiply(Vector<float> &left, float right) {
+        auto result = Vector<float> (left);
+        cblas_sscal(result.dimensions(), right, result.data(), 1);
+
+        return result;
+    }
+
+    template<>
+    Vector<double> multiply(Vector<double> &left, double right) {
+        auto result = Vector<double> (left);
+        cblas_dscal(result.dimensions(), right, result.data(), 1);
+
+        return result;
+    }
+
+    template<typename T>
+    Vector<T> multiply(T left, Vector<T> &right) {
+        throw std::runtime_error("Unsupported type for blas::multiply.");
+    }
+
+    template<>
+    Vector<float> multiply(float left, Vector<float> &right) {
+        auto result = Vector<float> (right);
+        cblas_sscal(result.dimensions(), left, result.data(), 1);
+
+        return result;
+    }
+
+    template<>
+    Vector<double> multiply(double left, Vector<double> &right) {
+        auto result = Vector<double> (right);
+        cblas_dscal(result.dimensions(), left, result.data(), 1);
+
+        return result;
+    }
+
+    template<typename T>
     T dot(Vector<T> &left, Vector<T> &right) {
         throw std::runtime_error("Unsupported type for blas::dot.");
     }

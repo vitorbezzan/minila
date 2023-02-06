@@ -111,6 +111,29 @@ namespace minila {
         {
             return std::acos(cosine(left, right));
         }
+
+        template<typename T1, typename T2>
+        inline auto multiply(Vector<T1> &left, T2 right) {
+            using R = decltype(T1(0) + T2(0));
+            auto result = Vector<R> (left.dimensions());
+
+            std::transform(left.data(), left.data() + left.dimensions(), result.data(),
+                           [&right](double element) {return element *= right;});
+
+            return result;
+        }
+
+        template<typename T1, typename T2>
+        inline auto multiply(T2 left, Vector<T1> &right) {
+            using R = decltype(T1(0) + T2(0));
+            auto result = Vector<R> (right.dimensions());
+
+            std::transform(right.data(), right.data() + right.dimensions(), result.data(),
+                           [&left](double element) {return element *= left;});
+
+            return result;
+        }
+
     };
 };
 
