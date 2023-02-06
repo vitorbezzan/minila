@@ -7,8 +7,8 @@
 #ifndef MINILA_VECTOR_H
 #define MINILA_VECTOR_H
 
-#include <numeric>
 #include <cmath>
+#include <numeric>
 
 namespace minila {
 

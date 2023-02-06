@@ -10,7 +10,8 @@
 #include "base.h"
 #include "matrix.h"
 #include "print.h"
-#include "matrix_multiply.h"
+#include "blas.h"
 #include "vector.h"
+#include "operators.h"
 
 #endif //MINILA_MINILA_H

@@ -114,28 +114,26 @@ namespace minila {
         return BaseArray<Type>(_dimensions, values);
     }
 
-    // All indexes are stored as column major order
+    // All indexes are stored as row major
     template<typename Type>
     requires std::floating_point<Type>
-    Type &BaseArray<Type>::operator()(const std::vector<uint64_t> &location) {
-        if (_dimensions.size() != location.size())
+    Type &BaseArray<Type>::operator()(const std::vector<uint64_t> &index) {
+        if (_dimensions.size() != index.size())
             throw std::invalid_argument("Index size mismatch for operation.");
 
-        uint64_t index = 0;
-        for (uint64_t i = 0; i < location.size(); i++) {
-
-            // Checks if location is valid during runtime
-            if (location[i] >= _dimensions[i])
+        uint64_t _index = 0;
+        for (uint64_t i = 0; i < index.size(); i++) {
+            if (index[i] >= _dimensions[i])
                 throw std::invalid_argument("Axis size mismatch for operation.");
 
-            uint64_t product = 1;
-            for (uint64_t j = 0; j < location.size() - 1; j++) {
-                product *= _dimensions[j];
+            uint64_t _product = 1;
+            for (uint64_t j = i + 1; j < index.size(); j++) {
+                _product *= _dimensions[j];
             }
-            index += location[i] * product;
+            _index += index[i] * _product;
         }
 
-        return _values[index];
+        return _values[_index];
     }
 
     template<typename Type>
