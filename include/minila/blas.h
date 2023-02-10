@@ -11,6 +11,8 @@
 #define MINILA_MATRIX_MULTIPLY_H
 
 #include <cblas.h>
+#include <concepts>
+#include <lapacke.h>
 #include "matrix.h"
 #include "vector.h"
 
@@ -126,7 +128,7 @@ namespace minila::blas {
     }
 
     template<>
-    Vector<double> multiply<double>(Vector<double> & left, Matrix < double > &right) {
+    Vector<double> multiply<double>(Vector<double> & left, Matrix <double> &right) {
         if (left.dimensions() != right.rows())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
@@ -135,6 +137,50 @@ namespace minila::blas {
                     1, 1.0, result.data(), 1);
 
         return result;
+    }
+
+    template<typename T>
+    requires std::floating_point<T>
+    struct SVDResults{
+        Matrix<T> U;
+        Vector<T> s;
+        Matrix<T> V;
+    };
+
+    template<typename T>
+    SVDResults<T> SVD(Matrix<T> &op) {
+        // SVD calculations help to find the rank of the matrix.
+        throw std::runtime_error("Unsupported type for SVD.");
+    }
+
+    template<>
+    SVDResults<float> SVD(Matrix<float> &op) {
+        auto results = SVDResults<float> {
+            Matrix<float> (op.rows(), op.rows()),
+            Vector<float> (std::min(op.rows(), op.cols())),
+            Matrix<float> (op.cols(), op.cols())
+        };
+        auto _w = Vector<float> (std::min(op.rows(), op.cols()) - 1);
+
+        LAPACKE_sgesvd(LAPACK_COL_MAJOR, 65, 65, op.rows(), op.cols(), op.data(), op.rows(),
+                       results.s.data(), results.U.data(), op.rows(), results.V.data(), op.cols(), _w.data());
+
+        return results;
+    }
+
+    template<>
+    SVDResults<double> SVD(Matrix<double> &op) {
+        auto results = SVDResults<double> {
+                Matrix<double> (op.rows(), op.rows()),
+                Vector<double> (std::min(op.rows(), op.cols())),
+                Matrix<double> (op.cols(), op.cols())
+        };
+        auto _w = Vector<double> (std::min(op.rows(), op.cols()) - 1);
+
+        LAPACKE_dgesvd(LAPACK_COL_MAJOR, 65, 65, op.rows(), op.cols(), op.data(), op.rows(),
+                       results.s.data(), results.U.data(), op.rows(), results.V.data(), op.cols(), _w.data());
+
+        return results;
     }
 
 };

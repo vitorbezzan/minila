@@ -14,11 +14,11 @@ SET(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}")
 SET(VERSION "${VERSION}.${VERSION_FEATURE}.${VERSION_PATCH}")
 MESSAGE("Version: ${VERSION}")
 
-# Setup: including all directories necessary for libraries (this can change in your system)
-include_directories(/opt/homebrew/opt/openblas/include)
-include_directories(/opt/homebrew/opt/lapack/include)
+# Setup: finding necessary packages. May differ in your environment.
+include_directories(/usr/local/include/openblas)
+include_directories(/usr/local/include/lapack)
+include_directories(/usr/local/include/lapacke)
 
-# Setup: finding necessary packages
 find_package(GTest REQUIRED)
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
@@ -33,7 +33,7 @@ add_library(
         include/minila/print.h
         include/minila/blas.h
         include/minila/vector.h
-        include/minila/operators.h)
+        include/minila/operators.h include/minila/numerical.h)
 target_link_libraries(minila ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES} pthread)
 
 # Test suite executable

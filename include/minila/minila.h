@@ -8,10 +8,11 @@
 #define MINILA_MINILA_H
 
 #include "base.h"
-#include "matrix.h"
-#include "print.h"
 #include "blas.h"
-#include "vector.h"
+#include "matrix.h"
+#include "numerical.h"
+#include "print.h"
 #include "operators.h"
+#include "vector.h"
 
 #endif //MINILA_MINILA_H
