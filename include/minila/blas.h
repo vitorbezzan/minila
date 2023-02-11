@@ -140,6 +140,35 @@ namespace minila::blas {
     }
 
     template<typename T>
+    Matrix<T> multiply(Matrix<T> &left, Matrix<T> &right) {
+        throw std::runtime_error("Unsupported type for blas::multiply.");
+    }
+
+    template<>
+    Matrix<float> multiply(Matrix<float> &left, Matrix<float> &right) {
+        if (left.cols() != right.rows())
+            throw std::runtime_error("Invalid axis sizes for blas::multiply.");
+
+        auto C = Matrix<float> (left.rows(), right.cols());
+        cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, left.rows(), right.cols(), left.cols(), 1.0, left.data(),
+                    left.rows(), right.data(), right.rows(), 1.0, C.data(), left.rows());
+
+        return C;
+    }
+
+    template<>
+    Matrix<double> multiply(Matrix<double> &left, Matrix<double> &right) {
+        if (left.cols() != right.rows())
+            throw std::runtime_error("Invalid axis sizes for blas::multiply.");
+
+        auto C = Matrix<double> (left.rows(), right.cols());
+        cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, left.rows(), right.cols(), left.cols(), 1.0, left.data(),
+                    left.rows(), right.data(), right.rows(), 1.0, C.data(), left.rows());
+
+        return C;
+    }
+
+    template<typename T>
     requires std::floating_point<T>
     struct SVDResults{
         Matrix<T> U;
@@ -161,10 +190,12 @@ namespace minila::blas {
             Matrix<float> (op.cols(), op.cols())
         };
         auto _w = Vector<float> (std::min(op.rows(), op.cols()) - 1);
+        auto M = Matrix<float> (op);
 
         LAPACKE_sgesvd(LAPACK_COL_MAJOR, 65, 65, op.rows(), op.cols(), op.data(), op.rows(),
                        results.s.data(), results.U.data(), op.rows(), results.V.data(), op.cols(), _w.data());
 
+        op = M; // To avoid the destruction of matrix
         return results;
     }
 
@@ -176,10 +207,12 @@ namespace minila::blas {
                 Matrix<double> (op.cols(), op.cols())
         };
         auto _w = Vector<double> (std::min(op.rows(), op.cols()) - 1);
+        auto M = Matrix<double> (op);
 
         LAPACKE_dgesvd(LAPACK_COL_MAJOR, 65, 65, op.rows(), op.cols(), op.data(), op.rows(),
                        results.s.data(), results.U.data(), op.rows(), results.V.data(), op.cols(), _w.data());
 
+        op = M; // To avoid the destruction of matrix
         return results;
     }
 
