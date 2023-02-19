@@ -4,11 +4,10 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
-#include <iostream>
 #include "include/minila/minila.h"
 
-using namespace minila;
 using namespace std;
+using namespace minila::op::performance;
 
 int main() {
     return 0;

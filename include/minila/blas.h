@@ -184,36 +184,36 @@ namespace minila::blas {
 
     template<>
     SVDResults<float> SVD(Matrix<float> &op) {
-        auto results = SVDResults<float> {
-            Matrix<float> (op.rows(), op.rows()),
-            Vector<float> (std::min(op.rows(), op.cols())),
-            Matrix<float> (op.cols(), op.cols())
-        };
-        auto _w = Vector<float> (std::min(op.rows(), op.cols()) - 1);
-        auto M = Matrix<float> (op);
-
-        LAPACKE_sgesvd(LAPACK_COL_MAJOR, 65, 65, op.rows(), op.cols(), op.data(), op.rows(),
-                       results.s.data(), results.U.data(), op.rows(), results.V.data(), op.cols(), _w.data());
-
-        op = M; // To avoid the destruction of matrix
-        return results;
+        return SVDResults<float> {};
     }
 
     template<>
     SVDResults<double> SVD(Matrix<double> &op) {
-        auto results = SVDResults<double> {
-                Matrix<double> (op.rows(), op.rows()),
-                Vector<double> (std::min(op.rows(), op.cols())),
-                Matrix<double> (op.cols(), op.cols())
-        };
-        auto _w = Vector<double> (std::min(op.rows(), op.cols()) - 1);
-        auto M = Matrix<double> (op);
+        return SVDResults<double> {};
+    }
 
-        LAPACKE_dgesvd(LAPACK_COL_MAJOR, 65, 65, op.rows(), op.cols(), op.data(), op.rows(),
-                       results.s.data(), results.U.data(), op.rows(), results.V.data(), op.cols(), _w.data());
+    template<typename T>
+    requires std::floating_point<T>
+    struct LUDecomposition{
+        Matrix<T> LU;
+        Vector<T> pivot;
+        int info;
+    };
 
-        op = M; // To avoid the destruction of matrix
-        return results;
+    template<typename T>
+    LUDecomposition<T> LU(Matrix<T> &M) {
+        // LU helps to solve linear systems and also to find the rank of a matrix for M square.
+        throw std::runtime_error("Unsupported type for LU.");
+    }
+
+    template<>
+    LUDecomposition<float> LU(Matrix<float> &M) {
+        return LUDecomposition<float> {};
+    }
+
+    template<>
+    LUDecomposition<double> LU(Matrix<double> &M) {
+        return LUDecomposition<double>{};
     }
 
 };
