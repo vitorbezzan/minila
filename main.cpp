@@ -7,7 +7,7 @@
 #include "include/minila/minila.h"
 
 using namespace std;
-using namespace minila::op::performance;
+using namespace minila::operators::performance;
 
 int main() {
     return 0;

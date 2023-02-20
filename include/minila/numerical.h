@@ -66,40 +66,6 @@ namespace minila::numerical {
         return RootResult {status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
     }
 
-    template<class F, typename T>
-    requires std::floating_point<T>
-    auto secant(F &function, T starting_1, T starting_2, uint16_t iterations = MINILA_MAXITER) {
-        // Checks during compile time if function being used is suitable;
-        // Accepts functions of one argument of same type as starting point.
-        std::function<T(T)> f(function);
-
-        // Accepts several input types, but always coerce them to double
-        // for maximum precision.
-        uint16_t n = 1;
-        uint8_t status = -1;
-
-        double x0 = starting_1;
-        double x1 = starting_2;
-        double xn = starting_2;
-
-        while (n < iterations)
-        {
-            xn = x1 - f(x1) * ((x1 - x0) / f(x1) - f(x0));
-            if(std::fabs(xn - x1) <= MINILA_RT_PRECISION)
-            {
-                status = 0;
-                break;
-            }
-
-            x0 = x1;
-            x1 = xn;
-
-            n++;
-        }
-
-        return RootResult {status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
-    }
-
 }
 
 #endif //MINILA_NUMERICAL_H

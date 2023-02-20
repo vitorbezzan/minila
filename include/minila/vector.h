@@ -7,134 +7,78 @@
 #ifndef MINILA_VECTOR_H
 #define MINILA_VECTOR_H
 
-#include <cmath>
-#include <numeric>
+#include "base.h"
 
 namespace minila {
 
-    template<typename Type>
+    template<typename T>
     class Vector {
 
     public:
         friend class Vector;
 
-        Vector() : _data(BaseArray < Type > ()), _dimensions(0) {}
-        Vector(const Vector<Type> &right);
-        explicit Vector(BaseArray <Type> &right);
+        Vector() : _data(BaseArray <T> ()), _dimensions(0) {}
+        Vector(const Vector<T> &right);
+        explicit Vector(BaseArray <T> &right);
         explicit Vector(uint64_t dimensions);
 
-        Type &operator()(uint64_t dimension);
-        Vector<Type> operator+(const Vector<Type> &right);
-        Vector<Type> operator-(const Vector<Type> &right);
+        T &operator()(uint64_t dimension);
+        Vector<T> operator+(const Vector<T> &right);
+        Vector<T> operator-(const Vector<T> &right);
 
         uint64_t dimensions();
-        Type *data();
+        T *data();
 
     private:
-        BaseArray <Type> _data;
+        BaseArray <T> _data;
         uint64_t _dimensions;
     };
 
-    template<typename Type>
-    Vector<Type>::Vector(const Vector<Type> &right) {
+    template<typename T>
+    Vector<T>::Vector(const Vector<T> &right) {
         _dimensions = right._dimensions;
         _data = right._data;
     }
 
-    template<typename Type>
-    Vector<Type>::Vector(BaseArray<Type> &right) {
+    template<typename T>
+    Vector<T>::Vector(BaseArray<T> &right) {
         _dimensions = right[0];
         _data = right;
     }
 
-    template<typename Type>
-    Vector<Type>::Vector(uint64_t dimensions) {
+    template<typename T>
+    Vector<T>::Vector(uint64_t dimensions) {
         _dimensions = dimensions;
-        _data = BaseArray < Type > ({ dimensions, });
+        _data = BaseArray < T > ({ dimensions, });
     }
 
-    template<typename Type>
-    Type &Vector<Type>::operator()(uint64_t dimension) {
+    template<typename T>
+    T &Vector<T>::operator()(uint64_t dimension) {
         return _data({dimension - 1,});
     }
 
-    template<typename Type>
-    Vector<Type> Vector<Type>::operator+(const Vector<Type> &right) {
+    template<typename T>
+    Vector<T> Vector<T>::operator+(const Vector<T> &right) {
         auto result = _data + right._data;
-        return Vector<Type>(result);
+        return Vector<T>(result);
     }
 
-    template<typename Type>
-    Vector<Type> Vector<Type>::operator-(const Vector<Type> &right) {
+    template<typename T>
+    Vector<T> Vector<T>::operator-(const Vector<T> &right) {
         auto result = _data - right._data;
-        return Vector<Type>(result);
+        return Vector<T>(result);
     }
 
-    template<typename Type>
-    uint64_t Vector<Type>::dimensions() {
+    template<typename T>
+    uint64_t Vector<T>::dimensions() {
         return _dimensions;
     }
 
-    template<typename Type>
-    Type *Vector<Type>::data() {
+    template<typename T>
+    T *Vector<T>::data() {
         return _data.data();
     }
-
-    namespace naive{
-
-        template<typename T1, typename T2>
-        inline auto dot(Vector<T1> &left, Vector<T2> &right)
-        {
-            if(left.dimensions() != right.dimensions())
-                throw std::invalid_argument("Invalid axis sizes on operation dot.");
-
-            using R = decltype(T1(0) * T2(0));
-            R result = std::inner_product(left.data(), left.data() + left.dimensions(), right.data(), 0);
-
-            return result;
-        }
-
-        template<typename T>
-        inline auto abs(Vector<T> &left)
-        {
-            return dot(left, left);
-        }
-
-        template<typename T1, typename T2>
-        inline auto cosine(Vector<T1> &left, Vector<T2> &right)
-        {
-            return dot(left, right) / (abs(left) * abs(right));
-        }
-
-        template<typename T1, typename T2>
-        inline auto angle(Vector<T1> &left, Vector<T2> &right)
-        {
-            return std::acos(cosine(left, right));
-        }
-
-        template<typename T1, typename T2>
-        inline auto multiply(Vector<T1> &left, T2 right) {
-            using R = decltype(T1(0) + T2(0));
-            auto result = Vector<R> (left.dimensions());
-
-            std::transform(left.data(), left.data() + left.dimensions(), result.data(),
-                           [&right](double element) {return element *= right;});
-
-            return result;
-        }
-
-        template<typename T1, typename T2>
-        inline auto multiply(T2 left, Vector<T1> &right) {
-            using R = decltype(T1(0) + T2(0));
-            auto result = Vector<R> (right.dimensions());
-
-            std::transform(right.data(), right.data() + right.dimensions(), result.data(),
-                           [&left](double element) {return element *= left;});
-
-            return result;
-        }
-
-    };
+    
 };
 
 #endif //MINILA_VECTOR_H

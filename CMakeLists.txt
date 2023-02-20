@@ -27,13 +27,8 @@ find_package(LAPACK REQUIRED)
 add_library(
         minila SHARED
         library.cpp
-        include/minila/base.h
         include/minila/minila.h
-        include/minila/matrix.h
-        include/minila/print.h
-        include/minila/blas.h
-        include/minila/vector.h
-        include/minila/operators.h include/minila/numerical.h)
+)
 target_link_libraries(minila ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES} pthread)
 
 # Test suite executable
@@ -41,5 +36,5 @@ add_executable(run_tests tests.cpp)
 target_link_libraries(run_tests ${GTEST_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES} pthread)
 
 # Scratchpad code for inline testing
-add_executable(main main.cpp)
+add_executable(main main.cpp include/minila/operator_naive.h include/minila/operator_performance.h)
 target_link_libraries(main ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES} pthread)

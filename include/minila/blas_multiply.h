@@ -11,18 +11,19 @@
 #define MINILA_MATRIX_MULTIPLY_H
 
 #include <cblas.h>
-#include <concepts>
-#include <lapacke.h>
+#include <stdexcept>
 #include "matrix.h"
 #include "vector.h"
 
 namespace minila::blas {
 
+    // Vector * scalar
     template<typename T>
     Vector<T> multiply(Vector<T> &left, T right) {
         throw std::runtime_error("Unsupported type for blas::multiply.");
     }
 
+    // Vector * scalar
     template<>
     Vector<float> multiply(Vector<float> &left, float right) {
         auto result = Vector<float> (left);
@@ -31,6 +32,7 @@ namespace minila::blas {
         return result;
     }
 
+    // Vector * scalar
     template<>
     Vector<double> multiply(Vector<double> &left, double right) {
         auto result = Vector<double> (left);
@@ -39,11 +41,13 @@ namespace minila::blas {
         return result;
     }
 
+    // scalar * Vector
     template<typename T>
     Vector<T> multiply(T left, Vector<T> &right) {
         throw std::runtime_error("Unsupported type for blas::multiply.");
     }
 
+    // scalar * Vector
     template<>
     Vector<float> multiply(float left, Vector<float> &right) {
         auto result = Vector<float> (right);
@@ -52,6 +56,7 @@ namespace minila::blas {
         return result;
     }
 
+    // scalar * Vector
     template<>
     Vector<double> multiply(double left, Vector<double> &right) {
         auto result = Vector<double> (right);
@@ -60,11 +65,13 @@ namespace minila::blas {
         return result;
     }
 
+    // Vector * Vector
     template<typename T>
     T dot(Vector<T> &left, Vector<T> &right) {
         throw std::runtime_error("Unsupported type for blas::dot.");
     }
 
+    // Vector * Vector
     template<>
     float dot(Vector<float> &left, Vector<float> &right) {
         if(left.dimensions() != right.dimensions())
@@ -73,6 +80,7 @@ namespace minila::blas {
         return cblas_sdot(left.dimensions(), left.data(), 1, right.data(), 1);
     }
 
+    // Vector * Vector
     template<>
     double dot(Vector<double> &left, Vector<double> &right) {
         if(left.dimensions() != right.dimensions())
@@ -81,11 +89,13 @@ namespace minila::blas {
         return cblas_ddot(left.dimensions(), left.data(), 1, right.data(), 1);
     }
 
+    // Matrix * Vector
     template<typename T>
     Vector<T> multiply(Matrix <T> &left, Vector<T> & right) {
         throw std::runtime_error("Unsupported type for blas::multiply.");
     }
 
+    // Matrix * Vector
     template<>
     Vector<float> multiply<float>(Matrix <float> &left, Vector<float> & right) {
         if (left.cols() != right.dimensions())
@@ -98,6 +108,7 @@ namespace minila::blas {
         return result;
     }
 
+    // Matrix * Vector
     template<>
     Vector<double> multiply<double>(Matrix <double> &left, Vector<double> & right) {
         if (left.cols() != right.dimensions())
@@ -110,11 +121,13 @@ namespace minila::blas {
         return result;
     }
 
+    // Vector * Matrix
     template<typename T>
     Vector<T> multiply(Vector<T> &left, Matrix <T> &right) {
         throw std::runtime_error("Unsupported type for blas::multiply.");
     }
 
+    // Vector * Matrix
     template<>
     Vector<float> multiply<float>(Vector<float> &left, Matrix <float> &right) {
         if (left.dimensions() != right.rows())
@@ -127,6 +140,7 @@ namespace minila::blas {
         return result;
     }
 
+    // Vector * Matrix
     template<>
     Vector<double> multiply<double>(Vector<double> & left, Matrix <double> &right) {
         if (left.dimensions() != right.rows())
@@ -139,11 +153,13 @@ namespace minila::blas {
         return result;
     }
 
+    // Matrix * Matrix
     template<typename T>
     Matrix<T> multiply(Matrix<T> &left, Matrix<T> &right) {
         throw std::runtime_error("Unsupported type for blas::multiply.");
     }
 
+    // Matrix * Matrix
     template<>
     Matrix<float> multiply(Matrix<float> &left, Matrix<float> &right) {
         if (left.cols() != right.rows())
@@ -156,6 +172,7 @@ namespace minila::blas {
         return C;
     }
 
+    // Matrix * Matrix
     template<>
     Matrix<double> multiply(Matrix<double> &left, Matrix<double> &right) {
         if (left.cols() != right.rows())
@@ -166,54 +183,6 @@ namespace minila::blas {
                     left.rows(), right.data(), right.rows(), 1.0, C.data(), left.rows());
 
         return C;
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    struct SVDResults{
-        Matrix<T> U;
-        Vector<T> s;
-        Matrix<T> V;
-    };
-
-    template<typename T>
-    SVDResults<T> SVD(Matrix<T> &op) {
-        // SVD calculations help to find the rank of the matrix.
-        throw std::runtime_error("Unsupported type for SVD.");
-    }
-
-    template<>
-    SVDResults<float> SVD(Matrix<float> &op) {
-        return SVDResults<float> {};
-    }
-
-    template<>
-    SVDResults<double> SVD(Matrix<double> &op) {
-        return SVDResults<double> {};
-    }
-
-    template<typename T>
-    requires std::floating_point<T>
-    struct LUDecomposition{
-        Matrix<T> LU;
-        Vector<T> pivot;
-        int info;
-    };
-
-    template<typename T>
-    LUDecomposition<T> LU(Matrix<T> &M) {
-        // LU helps to solve linear systems and also to find the rank of a matrix for M square.
-        throw std::runtime_error("Unsupported type for LU.");
-    }
-
-    template<>
-    LUDecomposition<float> LU(Matrix<float> &M) {
-        return LUDecomposition<float> {};
-    }
-
-    template<>
-    LUDecomposition<double> LU(Matrix<double> &M) {
-        return LUDecomposition<double>{};
     }
 
 };
