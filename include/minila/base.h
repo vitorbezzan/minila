@@ -14,107 +14,107 @@
 
 namespace minila {
 
-    template<typename Type> requires std::floating_point<Type>
+    template<typename T> requires std::is_arithmetic_v<T>
     class BaseArray {
     public:
 
         friend class BaseArray;
 
         BaseArray() : _values({}), _dimensions({}) {};
-        BaseArray(const BaseArray<Type> &right);
-        BaseArray(const std::vector<uint64_t> &dimensions, const std::vector<Type> &values);
+        BaseArray(const BaseArray<T> &right);
+        BaseArray(const std::vector<uint64_t> &dimensions, const std::vector<T> &values);
         explicit BaseArray(const std::vector<uint64_t> &dimensions);
         virtual ~BaseArray() = default;
 
-        BaseArray<Type> &operator=(const BaseArray<Type> &right);
-        BaseArray<Type> operator+(const BaseArray<Type> &right);
-        BaseArray<Type> operator-(const BaseArray<Type> &right);
+        BaseArray<T> &operator=(const BaseArray<T> &right);
+        BaseArray<T> operator+(const BaseArray<T> &right);
+        BaseArray<T> operator-(const BaseArray<T> &right);
 
-        Type &operator()(const std::vector<uint64_t> &location);
+        T &operator()(const std::vector<uint64_t> &index);
         uint64_t operator[](uint64_t dimension);
 
-        Type *data();
+        T *data();
 
     private:
-        void _check_dimensions(const BaseArray<Type> &right);
+        void _check_dimensions(const BaseArray<T> &right);
 
-        std::vector<Type> _values;
+        std::vector<T> _values;
         std::vector<uint64_t> _dimensions;
     };
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    BaseArray<Type>::BaseArray(const BaseArray<Type> &right) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    BaseArray<T>::BaseArray(const BaseArray<T> &right) {
         _dimensions = std::vector<uint64_t>(right._dimensions);
-        _values = std::vector<Type>(right._values);
+        _values = std::vector<T>(right._values);
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    BaseArray<Type>::BaseArray(const std::vector<uint64_t> &dimensions) {
-        auto N = std::accumulate(dimensions.begin(), dimensions.end(), 1, std::multiplies<Type>());
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    BaseArray<T>::BaseArray(const std::vector<uint64_t> &dimensions) {
+        auto N = std::accumulate(dimensions.begin(), dimensions.end(), 1, std::multiplies<T>());
 
         _dimensions = std::vector<uint64_t>(dimensions);
-        _values = std::vector<Type>(N, 0.0);
+        _values = std::vector<T>(N, 0.0);
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    BaseArray<Type>::BaseArray(const std::vector<uint64_t> &dimensions, const std::vector<Type> &values) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    BaseArray<T>::BaseArray(const std::vector<uint64_t> &dimensions, const std::vector<T> &values) {
         _dimensions = std::vector<uint64_t>(dimensions);
-        _values = std::vector<Type>(values);
+        _values = std::vector<T>(values);
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    BaseArray<Type> &BaseArray<Type>::operator=(const BaseArray<Type> &right) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    BaseArray<T> &BaseArray<T>::operator=(const BaseArray<T> &right) {
         _dimensions = std::vector<uint64_t>(right._dimensions);
-        _values = std::vector<Type>(right._values);
+        _values = std::vector<T>(right._values);
 
         return *this;
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    void BaseArray<Type>::_check_dimensions(const BaseArray<Type> &right) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    void BaseArray<T>::_check_dimensions(const BaseArray<T> &right) {
         if (_dimensions != right._dimensions)
             throw std::invalid_argument("Dimensions mismatch for operation.");
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    BaseArray<Type> BaseArray<Type>::operator+(const BaseArray<Type> &right) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    BaseArray<T> BaseArray<T>::operator+(const BaseArray<T> &right) {
         _check_dimensions(right);
-        auto values = std::vector<Type>(right._values);
+        auto values = std::vector<T>(right._values);
         std::transform(
                 _values.begin(),
                 _values.end(),
                 values.begin(),
                 values.begin(),
-                std::plus<Type>());
+                std::plus<T>());
 
-        return BaseArray<Type>(_dimensions, values);
+        return BaseArray<T>(_dimensions, values);
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    BaseArray<Type> BaseArray<Type>::operator-(const BaseArray<Type> &right) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    BaseArray<T> BaseArray<T>::operator-(const BaseArray<T> &right) {
         _check_dimensions(right);
-        auto values = std::vector<Type>(right._values);
+        auto values = std::vector<T>(right._values);
         std::transform(
                 _values.begin(),
                 _values.end(),
                 values.begin(),
                 values.begin(),
-                std::minus<Type>());
+                std::minus<T>());
 
-        return BaseArray<Type>(_dimensions, values);
+        return BaseArray<T>(_dimensions, values);
     }
 
     // All indexes are stored as row major
-    template<typename Type>
-    requires std::floating_point<Type>
-    Type &BaseArray<Type>::operator()(const std::vector<uint64_t> &index) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    T &BaseArray<T>::operator()(const std::vector<uint64_t> &index) {
         if (_dimensions.size() != index.size())
             throw std::invalid_argument("Index size mismatch for operation.");
 
@@ -133,14 +133,15 @@ namespace minila {
         return _values[_index];
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>
-    uint64_t BaseArray<Type>::operator[](uint64_t dimension) {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    uint64_t BaseArray<T>::operator[](uint64_t dimension) {
         return _dimensions[dimension];
     }
 
-    template<typename Type>
-    requires std::floating_point<Type>Type *BaseArray<Type>::data() {
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    T *BaseArray<T>::data() {
         return _values.data();
     }
 
