@@ -33,17 +33,17 @@ namespace minila {
         Matrix<float> U(M.rows(), M.rows());
         Matrix<float> V(M.cols(), M.cols());
         Vector<float> s(std::min(M.rows(), M.cols()));
-        
+
         //To be unmercifully destroyed.
         Matrix<float> _temp(M);
-        
+
         // To be used by the C-interface, meh.
         Vector<float> b(std::min(M.rows(), M.cols()));
 
         auto info = LAPACKE_sgesvd(LAPACK_COL_MAJOR, 'A', 'A', M.rows(), M.cols(), _temp.data(),
                                    M.rows(), s.data(), U.data(), U.rows(), V.data(), V.rows(), b.data());
-        
-        return SVD<float> {U, s, V, info};
+
+        return SVD<float>{U, s, V, info};
     }
 
     template<>
@@ -61,14 +61,14 @@ namespace minila {
         auto info = LAPACKE_dgesvd(LAPACK_COL_MAJOR, 'A', 'A', M.rows(), M.cols(), _temp.data(),
                                    M.rows(), s.data(), U.data(), U.rows(), V.data(), V.rows(), b.data());
 
-        return SVD<double> {U, s, V, info};
+        return SVD<double>{U, s, V, info};
     }
 
     template<typename T>
     inline uint64_t rank(SVD<T> &S) {
         uint64_t r = 0;
-        for(auto i = 1; i <= S.s.dimensions(); i++)
-            if(std::fabs(S.s(i)) >= MINILA_SVD_RANK)
+        for (auto i = 1; i <= S.s.dimensions(); i++)
+            if (std::fabs(S.s(i)) >= MINILA_SVD_RANK)
                 r++;
 
         return r;

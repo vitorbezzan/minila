@@ -26,7 +26,7 @@ namespace minila::blas {
     // Vector * scalar
     template<>
     Vector<float> multiply(Vector<float> &left, float right) {
-        auto result = Vector<float> (left);
+        auto result = Vector<float>(left);
         cblas_sscal(result.dimensions(), right, result.data(), 1);
 
         return result;
@@ -35,7 +35,7 @@ namespace minila::blas {
     // Vector * scalar
     template<>
     Vector<double> multiply(Vector<double> &left, double right) {
-        auto result = Vector<double> (left);
+        auto result = Vector<double>(left);
         cblas_dscal(result.dimensions(), right, result.data(), 1);
 
         return result;
@@ -50,7 +50,7 @@ namespace minila::blas {
     // scalar * Vector
     template<>
     Vector<float> multiply(float left, Vector<float> &right) {
-        auto result = Vector<float> (right);
+        auto result = Vector<float>(right);
         cblas_sscal(result.dimensions(), left, result.data(), 1);
 
         return result;
@@ -59,7 +59,7 @@ namespace minila::blas {
     // scalar * Vector
     template<>
     Vector<double> multiply(double left, Vector<double> &right) {
-        auto result = Vector<double> (right);
+        auto result = Vector<double>(right);
         cblas_dscal(result.dimensions(), left, result.data(), 1);
 
         return result;
@@ -74,7 +74,7 @@ namespace minila::blas {
     // Vector * Vector
     template<>
     float dot(Vector<float> &left, Vector<float> &right) {
-        if(left.dimensions() != right.dimensions())
+        if (left.dimensions() != right.dimensions())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
         return cblas_sdot(left.dimensions(), left.data(), 1, right.data(), 1);
@@ -83,7 +83,7 @@ namespace minila::blas {
     // Vector * Vector
     template<>
     double dot(Vector<double> &left, Vector<double> &right) {
-        if(left.dimensions() != right.dimensions())
+        if (left.dimensions() != right.dimensions())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
         return cblas_ddot(left.dimensions(), left.data(), 1, right.data(), 1);
@@ -91,13 +91,13 @@ namespace minila::blas {
 
     // Matrix * Vector
     template<typename T>
-    Vector<T> multiply(Matrix <T> &left, Vector<T> & right) {
+    Vector<T> multiply(Matrix<T> &left, Vector<T> &right) {
         throw std::runtime_error("Unsupported type for blas::multiply.");
     }
 
     // Matrix * Vector
     template<>
-    Vector<float> multiply<float>(Matrix <float> &left, Vector<float> & right) {
+    Vector<float> multiply<float>(Matrix<float> &left, Vector<float> &right) {
         if (left.cols() != right.dimensions())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
@@ -110,7 +110,7 @@ namespace minila::blas {
 
     // Matrix * Vector
     template<>
-    Vector<double> multiply<double>(Matrix <double> &left, Vector<double> & right) {
+    Vector<double> multiply<double>(Matrix<double> &left, Vector<double> &right) {
         if (left.cols() != right.dimensions())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
@@ -123,13 +123,13 @@ namespace minila::blas {
 
     // Vector * Matrix
     template<typename T>
-    Vector<T> multiply(Vector<T> &left, Matrix <T> &right) {
+    Vector<T> multiply(Vector<T> &left, Matrix<T> &right) {
         throw std::runtime_error("Unsupported type for blas::multiply.");
     }
 
     // Vector * Matrix
     template<>
-    Vector<float> multiply<float>(Vector<float> &left, Matrix <float> &right) {
+    Vector<float> multiply<float>(Vector<float> &left, Matrix<float> &right) {
         if (left.dimensions() != right.rows())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
@@ -142,7 +142,7 @@ namespace minila::blas {
 
     // Vector * Matrix
     template<>
-    Vector<double> multiply<double>(Vector<double> & left, Matrix <double> &right) {
+    Vector<double> multiply<double>(Vector<double> &left, Matrix<double> &right) {
         if (left.dimensions() != right.rows())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
@@ -165,7 +165,7 @@ namespace minila::blas {
         if (left.cols() != right.rows())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
-        auto C = Matrix<float> (left.rows(), right.cols());
+        auto C = Matrix<float>(left.rows(), right.cols());
         cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, left.rows(), right.cols(), left.cols(), 1.0, left.data(),
                     left.rows(), right.data(), right.rows(), 1.0, C.data(), left.rows());
 
@@ -178,7 +178,7 @@ namespace minila::blas {
         if (left.cols() != right.rows())
             throw std::runtime_error("Invalid axis sizes for blas::multiply.");
 
-        auto C = Matrix<double> (left.rows(), right.cols());
+        auto C = Matrix<double>(left.rows(), right.cols());
         cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, left.rows(), right.cols(), left.cols(), 1.0, left.data(),
                     left.rows(), right.data(), right.rows(), 1.0, C.data(), left.rows());
 

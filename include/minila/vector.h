@@ -17,20 +17,26 @@ namespace minila {
     public:
         friend class Vector;
 
-        Vector() : _data(BaseArray <T> ()), _dimensions(0) {}
+        Vector() : _data(BaseArray<T>()), _dimensions(0) {}
+
         Vector(const Vector<T> &right);
-        explicit Vector(BaseArray <T> &right);
+
+        explicit Vector(BaseArray<T> &right);
+
         explicit Vector(uint64_t dimensions);
 
         T &operator()(uint64_t dimension);
+
         Vector<T> operator+(const Vector<T> &right);
+
         Vector<T> operator-(const Vector<T> &right);
 
         uint64_t dimensions();
+
         T *data();
 
     private:
-        BaseArray <T> _data;
+        BaseArray<T> _data;
         uint64_t _dimensions;
     };
 
@@ -49,7 +55,7 @@ namespace minila {
     template<typename T>
     Vector<T>::Vector(uint64_t dimensions) {
         _dimensions = dimensions;
-        _data = BaseArray <T> ({dimensions,});
+        _data = BaseArray<T>({dimensions,});
     }
 
     template<typename T>
@@ -78,7 +84,7 @@ namespace minila {
     T *Vector<T>::data() {
         return _data.data();
     }
-    
+
 };
 
 #endif //MINILA_VECTOR_H

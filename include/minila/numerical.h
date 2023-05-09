@@ -13,7 +13,7 @@
 
 namespace minila::numerical {
 
-    struct RealRoot{
+    struct RealRoot {
         uint8_t status;
         double_t root;
         uint16_t iter;
@@ -24,10 +24,10 @@ namespace minila::numerical {
     template<class F, typename T1>
     requires std::floating_point<T1>
     inline auto derivative(F &f, T1 x, uint8_t order = MINILA_DX_ORDER, double_t dx = MINILA_DX_PRECISION) {
-        if(order == 2)
-            return (f(x + dx) - f(x - dx)) / (2*dx);
+        if (order == 2)
+            return (f(x + dx) - f(x - dx)) / (2 * dx);
 
-        return (-f(x + 2*dx) + 8*f(x + dx) - 8*f(x - dx) + f(x - 2*dx)) / (12*dx);
+        return (-f(x + 2 * dx) + 8 * f(x + dx) - 8 * f(x - dx) + f(x - 2 * dx)) / (12 * dx);
     }
 
     template<class F, typename T>
@@ -45,11 +45,9 @@ namespace minila::numerical {
         double x0 = starting;
         double xn = starting;
 
-        while (n < iterations)
-        {
+        while (n < iterations) {
             xn = x0 - f(x0) / derivative(f, x0);
-            if(std::fabs(xn - x0) <= MINILA_RT_PRECISION)
-            {
+            if (std::fabs(xn - x0) <= MINILA_RT_PRECISION) {
                 status = 0;
                 break;
             }
@@ -58,7 +56,7 @@ namespace minila::numerical {
             n++;
         }
 
-        return RealRoot {status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
+        return RealRoot{status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
     }
 
     template<class F, class D, typename T>
@@ -77,11 +75,9 @@ namespace minila::numerical {
         double x0 = starting;
         double xn = starting;
 
-        while (n < iterations)
-        {
+        while (n < iterations) {
             xn = x0 - f(x0) / d(f, x0);
-            if(std::fabs(xn - x0) <= MINILA_RT_PRECISION)
-            {
+            if (std::fabs(xn - x0) <= MINILA_RT_PRECISION) {
                 status = 0;
                 break;
             }
@@ -90,7 +86,7 @@ namespace minila::numerical {
             n++;
         }
 
-        return RealRoot {status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
+        return RealRoot{status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
     }
 
 };

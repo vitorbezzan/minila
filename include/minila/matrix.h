@@ -18,15 +18,21 @@ namespace minila {
         friend class Matrix;
 
         Matrix() : _data(BaseArray<T>()), _rows(0), _cols(0) {}
+
         Matrix(const Matrix<T> &right);
+
         explicit Matrix(BaseArray<T> &right);
+
         Matrix(uint64_t rows, uint64_t cols);
 
         T &operator()(uint64_t row, uint64_t col);
+
         Matrix<T> operator+(const Matrix<T> &right);
+
         Matrix<T> operator-(const Matrix<T> &right);
 
         uint64_t rows();
+
         uint64_t cols();
 
         T *data();

@@ -19,10 +19,10 @@ namespace minila::naive {
     template<typename T1, typename T2>
     inline auto multiply(Vector<T1> &left, T2 right) {
         using R = decltype(T1(0) + T2(0));
-        auto result = Vector<R> (left.dimensions());
+        auto result = Vector<R>(left.dimensions());
 
         std::transform(left.data(), left.data() + left.dimensions(), result.data(),
-                       [&right](double element) {return element *= right;});
+                       [&right](double element) { return element *= right; });
 
         return result;
     }
@@ -31,19 +31,18 @@ namespace minila::naive {
     template<typename T1, typename T2>
     inline auto multiply(T2 left, Vector<T1> &right) {
         using R = decltype(T1(0) + T2(0));
-        auto result = Vector<R> (right.dimensions());
+        auto result = Vector<R>(right.dimensions());
 
         std::transform(right.data(), right.data() + right.dimensions(), result.data(),
-                       [&left](double element) {return element *= left;});
+                       [&left](double element) { return element *= left; });
 
         return result;
     }
 
     // Vector * Vector
     template<typename T1, typename T2>
-    inline auto dot(Vector<T1> &left, Vector<T2> &right)
-    {
-        if(left.dimensions() != right.dimensions())
+    inline auto dot(Vector<T1> &left, Vector<T2> &right) {
+        if (left.dimensions() != right.dimensions())
             throw std::invalid_argument("Invalid axis sizes on operation dot.");
 
         using R = decltype(T1(0) * T2(0));
@@ -55,7 +54,7 @@ namespace minila::naive {
     // Matrix * Vector
     template<typename T1, typename T2>
     auto multiply(Matrix<T1> &M, Vector<T2> &v) {
-        if(M.cols() != v.dimensions())
+        if (M.cols() != v.dimensions())
             throw std::invalid_argument("Invalid axis sizes on operation naive::multiply.");
 
         using R = decltype(T1(0) * T2(0));
@@ -77,7 +76,7 @@ namespace minila::naive {
         using R = decltype(T1(0) * T2(0));
         Vector<R> result(M.cols());
 
-        for(uint64_t i = 1; i <= result.dimensions(); i++)
+        for (uint64_t i = 1; i <= result.dimensions(); i++)
             for (uint64_t k = 1; k <= M.cols(); k++)
                 result(i) += v(k) * M(k, i);
 
@@ -103,22 +102,19 @@ namespace minila::naive {
 
     // Absolute value of vector
     template<typename T>
-    inline auto abs(Vector<T> &left)
-    {
+    inline auto abs(Vector<T> &left) {
         return dot(left, left);
     }
 
     // Cosine of angle between Vector
     template<typename T1, typename T2>
-    inline auto cosine(Vector<T1> &left, Vector<T2> &right)
-    {
+    inline auto cosine(Vector<T1> &left, Vector<T2> &right) {
         return dot(left, right) / (abs(left) * abs(right));
     }
 
     // Angle between vectors
     template<typename T1, typename T2>
-    inline auto angle(Vector<T1> &left, Vector<T2> &right)
-    {
+    inline auto angle(Vector<T1> &left, Vector<T2> &right) {
         return std::acos(cosine(left, right));
     }
 

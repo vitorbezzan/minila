@@ -30,23 +30,23 @@ namespace minila {
     template<>
     LU<float> lu(Matrix<float> &M) {
         auto D = Matrix(M);
-        auto ipiv = Vector<int> (std::max((uint64_t) 1,
-                                          (uint64_t) std::min(M.rows(), M.cols())));
+        auto ipiv = Vector<int>(std::max((uint64_t) 1,
+                                         (uint64_t) std::min(M.rows(), M.cols())));
 
         auto info = LAPACKE_sgetrf(LAPACK_COL_MAJOR, D.rows(), D.cols(), D.data(), D.rows(), ipiv.data());
 
-        return LU<float> {D, ipiv, info};
+        return LU<float>{D, ipiv, info};
     }
 
     template<>
     LU<double> lu(Matrix<double> &M) {
         auto D = Matrix(M);
-        auto ipiv = Vector<int> (std::max((uint64_t) 1,
-                                          (uint64_t) std::min(M.rows(), M.cols())));
+        auto ipiv = Vector<int>(std::max((uint64_t) 1,
+                                         (uint64_t) std::min(M.rows(), M.cols())));
 
         auto info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, D.rows(), D.cols(), D.data(), D.rows(), ipiv.data());
 
-        return LU<double> {D, ipiv, info};
+        return LU<double>{D, ipiv, info};
     }
 
 };

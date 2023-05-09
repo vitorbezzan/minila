@@ -21,10 +21,9 @@ namespace minila::integration {
 
         auto h = (end - start) / subdivisions;
         T result = 0;
-        for(uint32_t i = 0; i < subdivisions; i++)
-        {
-            auto a = start + h*i;
-            auto b = start + h*(i + 1);
+        for (uint32_t i = 0; i < subdivisions; i++) {
+            auto a = start + h * i;
+            auto b = start + h * (i + 1);
             result += (f(a) + f(b)) / 2;
         }
 
@@ -40,14 +39,13 @@ namespace minila::integration {
 
         auto h = (end - start) / subdivisions;
         T result = 0;
-        for(uint32_t i = 0; i < subdivisions; i++)
-        {
-            auto a = start + h*i;
-            auto b = start + h*(i + 1);
-            result += f(a) + 4 * f((a + b)/2) + f(b);
+        for (uint32_t i = 0; i < subdivisions; i++) {
+            auto a = start + h * i;
+            auto b = start + h * (i + 1);
+            result += f(a) + 4 * f((a + b) / 2) + f(b);
         }
 
-        return (h/6) * result;
+        return (h / 6) * result;
     }
 
     template<class F, typename T>
@@ -59,14 +57,13 @@ namespace minila::integration {
 
         auto h = (end - start) / subdivisions;
         T result = 0;
-        for(uint32_t i = 0; i < subdivisions; i++)
-        {
-            auto a = start + h*i;
-            auto b = start + h*(i + 1);
-            result += f(a) + 3*f((2*a + b)/3) + 3*f((a + 2*b)/3) + f(b);
+        for (uint32_t i = 0; i < subdivisions; i++) {
+            auto a = start + h * i;
+            auto b = start + h * (i + 1);
+            result += f(a) + 3 * f((2 * a + b) / 3) + 3 * f((a + 2 * b) / 3) + f(b);
         }
 
-        return (h/8) * result;
+        return (h / 8) * result;
     }
 
 };
