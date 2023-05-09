@@ -49,7 +49,7 @@ namespace minila {
     template<typename T>
     Vector<T>::Vector(uint64_t dimensions) {
         _dimensions = dimensions;
-        _data = BaseArray < T > ({ dimensions, });
+        _data = BaseArray <T> ({dimensions,});
     }
 
     template<typename T>
@@ -59,13 +59,13 @@ namespace minila {
 
     template<typename T>
     Vector<T> Vector<T>::operator+(const Vector<T> &right) {
-        auto result = _data + right._data;
+        BaseArray<T> result = _data + right._data;
         return Vector<T>(result);
     }
 
     template<typename T>
     Vector<T> Vector<T>::operator-(const Vector<T> &right) {
-        auto result = _data - right._data;
+        BaseArray<T> result = _data - right._data;
         return Vector<T>(result);
     }
 

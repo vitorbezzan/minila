@@ -9,18 +9,13 @@
 
 #include <cmath>
 #include <functional>
+#include "constants.h"
 
 namespace minila::numerical {
 
-    double_t MINILA_DX_PRECISION = 1e-6;
-    double_t MINILA_RT_PRECISION = 1e-6;
-    uint8_t MINILA_DX_ORDER = 4;
-    uint16_t MINILA_MAXITER = 10000;
-
-    struct RootResult{
+    struct RealRoot{
         uint8_t status;
-        double_t result;
-
+        double_t root;
         uint16_t iter;
         double_t dx_precision;
         double_t rt_precision;
@@ -63,9 +58,41 @@ namespace minila::numerical {
             n++;
         }
 
-        return RootResult {status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
+        return RealRoot {status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
     }
 
-}
+    template<class F, class D, typename T>
+    requires std::floating_point<T>
+    auto newton(F &function, D &_derivative, T starting, uint16_t iterations = MINILA_MAXITER) {
+        // Checks during compile time if function being used is suitable;
+        // Accepts functions of one argument of same type as starting point.
+        std::function<T(T)> f(function);
+        std::function<T(T)> d(_derivative);
+
+        // Accepts several input types, but always coerce them to double
+        // for maximum precision.
+        uint16_t n = 1;
+        uint8_t status = -1;
+
+        double x0 = starting;
+        double xn = starting;
+
+        while (n < iterations)
+        {
+            xn = x0 - f(x0) / d(f, x0);
+            if(std::fabs(xn - x0) <= MINILA_RT_PRECISION)
+            {
+                status = 0;
+                break;
+            }
+
+            x0 = xn;
+            n++;
+        }
+
+        return RealRoot {status, xn, n, MINILA_DX_PRECISION, MINILA_RT_PRECISION};
+    }
+
+};
 
 #endif //MINILA_NUMERICAL_H

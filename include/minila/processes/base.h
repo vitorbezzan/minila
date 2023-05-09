@@ -4,12 +4,8 @@
  * Code is distributed as-is without any guarantee of purpose.
  */
 
-#include <iostream>
-#include "include/minila/minila.h"
+#ifndef MINILA_PROCESS_BASE_H
+#define MINILA_PROCESS_BASE_H
 
-using namespace std;
 
-int main()
-{
-    return 0;
-}
+#endif //MINILA_PROCESS_BASE_H

@@ -7,12 +7,6 @@
 #include "include/minila/minila.h"
 
 template
-class minila::BaseArray<float>;
-
-template
-class minila::BaseArray<double>;
-
-template
 class minila::Matrix<float>;
 
 template
@@ -23,3 +17,15 @@ class minila::Vector<float>;
 
 template
 class minila::Vector<double>;
+
+template
+class minila::SVD<float>;
+
+template
+class minila::SVD<double>;
+
+template
+class minila::LU<float>;
+
+template
+class minila::LU<double>;

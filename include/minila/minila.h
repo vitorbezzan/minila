@@ -9,12 +9,17 @@
 
 #include "base.h"
 #include "blas_multiply.h"
+#include "constants.h"
+#include "integration.h"
+#include "lu.h"
 #include "matrix.h"
 #include "naive.h"
 #include "numerical.h"
 #include "operator_naive.h"
 #include "operator_performance.h"
+#include "processes/base.h"
 #include "print.h"
+#include "svd.h"
 #include "vector.h"
 
 #endif //MINILA_MINILA_H
