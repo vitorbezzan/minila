@@ -11,5 +11,15 @@ using namespace std;
 
 int main()
 {
+    auto mean = minila::process::Process(0.001);
+    auto sigma = minila::process::Process(0.05);
+
+    auto p = minila::process::Geometric(20.0, &mean, &sigma);
+
+    auto sequence = p.path(100, 42);
+
+    for(int i = 0; i< 100; i++)
+        std::cout<<(*sequence)[i]<<std::endl;
+
     return 0;
 }

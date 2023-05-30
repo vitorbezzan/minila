@@ -18,6 +18,8 @@
 #include "operator_naive.h"
 #include "operator_performance.h"
 #include "processes/base.h"
+#include "processes/brownian.h"
+#include "processes/geometric.h"
 #include "print.h"
 #include "svd.h"
 #include "vector.h"

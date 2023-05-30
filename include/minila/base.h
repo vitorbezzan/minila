@@ -7,6 +7,7 @@
 #ifndef MINILA_BASE_H
 #define MINILA_BASE_H
 
+#include <algorithm>
 #include <functional>
 #include <numeric>
 #include <stdexcept>
@@ -33,6 +34,10 @@ namespace minila {
         // Creates BaseArray with values
         template<size_t N1, size_t N2>
         BaseArray(const uint64_t (&dimensions)[N1], const T (&values)[N2]);
+
+        // Creates BaseArray with same value
+        template<size_t N>
+        BaseArray(const uint64_t (&dimensions)[N], T &value);
 
         // Virtual destructor
         virtual ~BaseArray();
@@ -114,6 +119,29 @@ namespace minila {
         }
 
         throw std::invalid_argument("Dimension size mismatch for operation.");
+    }
+
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    template<size_t N>
+    BaseArray<T>::BaseArray(const uint64_t (&dimensions)[N], T &value) : BaseArray() {
+        _ndim = uint64_t(N);
+
+        if(N > 0)
+        {
+            _n_elements = std::accumulate(
+                    std::begin(dimensions),
+                    std::end(dimensions),
+                    1,
+                    std::multiplies<T>()
+            );
+
+            _dimensions = new uint64_t[N];
+            std::copy(std::begin(dimensions), std::end(dimensions), _dimensions);
+
+            _data = new T[_n_elements];
+            std::fill_n(_data, _n_elements, value);
+        }
     }
 
     template<typename T>
