@@ -11,6 +11,7 @@
 #include "blas_multiply.h"
 #include "constants.h"
 #include "integration.h"
+#include "linsolve.h"
 #include "lu.h"
 #include "matrix.h"
 #include "naive.h"
